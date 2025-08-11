@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="item_civilian" type="id" />
+    <item name="item_mafia" type="id" />
+    <item name="item_don" type="id" />
+    <item name="item_sheriff" type="id" />
+    <item name="item_doctor" type="id" />
+    <item name="item_maniac" type="id" />
+    <item name="item_werewolf" type="id" />
+    <item name="item_journalist" type="id" />
+    <item name="item_yakuza" type="id" />
+
+</resources>

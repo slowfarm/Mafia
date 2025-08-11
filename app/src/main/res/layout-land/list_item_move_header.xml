@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:ignore="MissingDefaultResource">
+
+    <ImageView
+        android:layout_width="@dimen/image_size"
+        android:layout_height="@dimen/image_size"
+        android:src="@drawable/ic_mafia"
+        android:visibility="invisible" />
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/ButtonStyle.Variant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp8"
+        android:text="@string/one" />
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/ButtonStyle.Variant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp8"
+        android:text="@string/two" />
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/ButtonStyle.Variant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp8"
+        android:text="@string/three" />
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/ButtonStyle.Variant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp8"
+        android:text="@string/four" />
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/ButtonStyle.Variant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp8"
+        android:text="@string/five" />
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/ButtonStyle.Variant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp8"
+        android:text="@string/six" />
+
+</LinearLayout>
