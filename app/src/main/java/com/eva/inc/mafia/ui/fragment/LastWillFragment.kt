@@ -1,4 +1,4 @@
-package com.eva.inc.mafia.ui.fragment.lastwill
+package com.eva.inc.mafia.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -25,7 +25,7 @@ class LastWillFragment : BaseFragment<FragmentLastWillBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         val player = lastWill.player
-        binding.textViewPlayerName.text = "Игрок №${player.number} ${player.name.orEmpty()}"
+        binding.textViewPlayerName.text = "Игрок ${player}}"
         binding.textViewPlayerRole.text = "Роль: ${getString(player.role.title)}"
     }
 

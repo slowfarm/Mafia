@@ -1,4 +1,4 @@
-package com.eva.inc.mafia.ui.fragment.vote
+package com.eva.inc.mafia.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -29,7 +29,16 @@ class VoteFragment : BaseFragment<FragmentVoteBinding>() {
             DomainRepository.removePlayers(adapter.getSelectedPlayers())
         }
 
-        collectWithLifecycle(DomainRepository.exhibitedPlayers) { adapter.setItems(it.toList()) }
+        collectWithLifecycle(DomainRepository.exhibitedPlayers) { players ->
+            val items = players.map {
+                ExhibitedPlayersAdapter.ExhibitedPlayer(
+                    it,
+                    it.toString(),
+                    false,
+                )
+            }
+            adapter.setItems(items)
+        }
     }
 
     companion object {

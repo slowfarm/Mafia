@@ -15,40 +15,9 @@
         android:text="Мафия и Дон знакомятся. Таймер 60 секунд."
         android:textSize="20sp" />
 
-    <TextView
-        android:id="@+id/textViewTimer"
+    <com.eva.inc.mafia.ui.custom.CountdownTimerView
+        android:id="@+id/countdownTimer"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="01:00"
-        android:textSize="48sp" />
+        android:layout_height="wrap_content" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btnPlay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Play" />
-
-        <Button
-            android:id="@+id/btnPause"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:text="Pause"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/btnRestart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:text="Restart"
-            android:visibility="gone" />
-    </LinearLayout>
 </LinearLayout>

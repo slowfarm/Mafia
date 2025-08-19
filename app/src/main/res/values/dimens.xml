@@ -24,6 +24,7 @@
     <dimen name="sp18">18sp</dimen>
     <dimen name="sp20">20sp</dimen>
     <dimen name="sp24">24sp</dimen>
+    <dimen name="sp48">48sp</dimen>
 
     <dimen name="corner_radius">@dimen/dp16</dimen>
 

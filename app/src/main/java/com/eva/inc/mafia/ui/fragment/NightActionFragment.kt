@@ -1,4 +1,4 @@
-package com.eva.inc.mafia.ui.fragment.nightaction
+package com.eva.inc.mafia.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,7 +22,7 @@ class NightActionFragment : BaseFragment<FragmentNightActionBinding>() {
         arguments.getParcelableCompat(ARG_NIGHT_ACTION)
     }
 
-    private val adapter by lazyUi { ExhibitedPlayersAdapter() }
+    private val adapter by lazyUi { ExhibitedPlayersAdapter(true) }
 
     override fun onViewCreated(
         view: View,
@@ -41,7 +41,16 @@ class NightActionFragment : BaseFragment<FragmentNightActionBinding>() {
             else -> setupForOthers()
         }
 
-        collectWithLifecycle(DomainRepository.players) { adapter.setItems(it) }
+        collectWithLifecycle(DomainRepository.players) { players ->
+            val items = players.map {
+                ExhibitedPlayersAdapter.ExhibitedPlayer(
+                    it,
+                    it.toString(),
+                    false,
+                )
+            }
+            adapter.setItems(items)
+        }
     }
 
     private fun setupForMafia() =
@@ -51,13 +60,11 @@ class NightActionFragment : BaseFragment<FragmentNightActionBinding>() {
             btnNightAction.text = "Убрать из игры"
 
             btnNightAction.setOnClickListener {
-                val selected = adapter.getSelectedPlayers()
-                if (selected.size == 1) {
-                    val target = selected[0]
-                    textViewResult.text =
-                        "Игрок №${target.number} ${target.name.orEmpty()} убран мафией"
+                val item = adapter.getSelectedPlayers().firstOrNull()
+                if (item != null) {
+                    textViewResult.text = "$item убран мафией"
+                    DomainRepository.removePlayers(listOf(item))
                 }
-                DomainRepository.removePlayers(selected)
             }
         }
 
@@ -67,16 +74,10 @@ class NightActionFragment : BaseFragment<FragmentNightActionBinding>() {
             btnNightAction.text = "Проверить"
 
             btnNightAction.setOnClickListener {
-                val selected = adapter.getSelectedPlayers()
-                if (selected.size == 1) {
-                    val target = selected[0]
-                    val isSheriff = target.role == Role.SHERIFF
-                    textViewResult.text =
-                        if (isSheriff) {
-                            "Игрок №${target.number} — Шериф"
-                        } else {
-                            "Игрок №${target.number} — не Шериф"
-                        }
+                val item = adapter.getSelectedPlayers().firstOrNull()
+                if (item != null) {
+                    val isSheriff = item.role == Role.SHERIFF
+                    textViewResult.text = "Игрок $item — ${if (!isSheriff) "не" else ""} Шериф"
                 }
             }
         }
@@ -87,16 +88,10 @@ class NightActionFragment : BaseFragment<FragmentNightActionBinding>() {
             btnNightAction.text = "Проверить"
 
             btnNightAction.setOnClickListener {
-                val selected = adapter.getSelectedPlayers()
-                if (selected.size == 1) {
-                    val target = selected[0]
-                    val isDon = target.role == Role.DON
-                    textViewResult.text =
-                        if (isDon) {
-                            "Игрок №${target.number} — Дон"
-                        } else {
-                            "Игрок №${target.number} — не Дон"
-                        }
+                val item = adapter.getSelectedPlayers().firstOrNull()
+                if (item != null) {
+                    val isDon = item.role == Role.DON
+                    textViewResult.text = "Игрок $item — ${if (!isDon) "не" else ""} Дон"
                 }
             }
         }

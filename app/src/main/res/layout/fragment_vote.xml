@@ -4,20 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical"
     android:padding="@dimen/dp16">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewExhibitedPlayers"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingTop="@dimen/dp16"
+        android:layout_height="wrap_content"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/list_item_exhibited_player" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnRemoveSelected"
+        style="@style/ButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp16"

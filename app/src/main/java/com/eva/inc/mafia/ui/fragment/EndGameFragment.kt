@@ -1,4 +1,4 @@
-package com.eva.inc.mafia.ui.fragment.endgame
+package com.eva.inc.mafia.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.eva.inc.mafia.databinding.FragmentEndGameBinding
 import com.eva.inc.mafia.domain.repository.DomainRepository
-import com.eva.inc.mafia.ui.adapter.PlayersRoleAdapter
+import com.eva.inc.mafia.ui.adapter.PlayersResultAdapter
 import com.eva.inc.mafia.ui.entity.Role
 import com.eva.inc.mafia.ui.fragment.base.BaseFragment
 
@@ -30,9 +30,18 @@ class EndGameFragment : BaseFragment<FragmentEndGameBinding>() {
 
         binding.textViewEndGameMessage.text = "$winMessage. Итоги игроков:"
 
-        val adapter = PlayersRoleAdapter()
-        binding.recyclerViewPlayers.adapter = adapter
-        adapter.setItems(DomainRepository.allPlayers)
+        val adapter = PlayersResultAdapter()
+        binding.rvPlayerStatistic.adapter = adapter
+
+        val items = DomainRepository.allPlayers.map {
+            PlayersResultAdapter.PlayerResult(
+                it.role.drawable,
+                it.toString(),
+                it.role.title,
+                !players.contains(it),
+            )
+        }
+        adapter.setItems(items)
     }
 
     companion object {

@@ -7,10 +7,9 @@ import com.eva.inc.mafia.databinding.ListItemExhibitedPlayerBinding
 import com.eva.inc.mafia.ui.adapter.ExhibitedPlayersAdapter.ExhibitedPlayersViewHolder
 import com.eva.inc.mafia.ui.entity.Player
 
-class ExhibitedPlayersAdapter : RecyclerView.Adapter<ExhibitedPlayersViewHolder>() {
-    private val selectedItems = mutableSetOf<Int>()
-
-    private var items = listOf<Player>()
+class ExhibitedPlayersAdapter(private val singleSelection: Boolean = false) :
+    RecyclerView.Adapter<ExhibitedPlayersViewHolder>() {
+    private var items = mutableListOf<ExhibitedPlayer>()
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -32,34 +31,39 @@ class ExhibitedPlayersAdapter : RecyclerView.Adapter<ExhibitedPlayersViewHolder>
         holder.bind(items[position])
     }
 
-    fun setItems(items: List<Player>) {
-        this.items = items
+    fun setItems(items: List<ExhibitedPlayer>) {
+        this.items = items.toMutableList()
         notifyDataSetChanged()
     }
 
-    fun getSelectedPlayers(): List<Player> = selectedItems.map { items[it] }
+    fun getSelectedPlayers() = items.filter { it.selected }.map { it.player }
 
     inner class ExhibitedPlayersViewHolder(
         private val binding: ListItemExhibitedPlayerBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(player: Player) =
+        fun bind(player: ExhibitedPlayer) =
             with(binding) {
-                val selected = selectedItems.contains(bindingAdapterPosition)
-
                 checkboxSelected.setOnCheckedChangeListener(null)
-                textViewPlayer.text = "Игрок №${player.number} ${player.name.orEmpty()}"
-                checkboxSelected.isChecked = selected
-                checkboxSelected.setOnCheckedChangeListener { _, isChecked -> setSelected(isChecked) }
-                root.setOnClickListener { setSelected(!selected) }
+                textViewPlayer.text = player.name
+                checkboxSelected.isChecked = player.selected
+                checkboxSelected.setOnCheckedChangeListener { _, checked ->
+                    if (singleSelection) {
+                        val index = items.indexOfFirst { it.selected }
+                        if (index != -1) {
+                            items[index] = items[index].copy(selected = false)
+                            notifyItemChanged(index)
+                        }
+                    }
+                    val position = bindingAdapterPosition
+                    items[position] = items[position].copy(selected = checked)
+                    notifyItemChanged(position)
+                }
             }
-
-        private fun setSelected(selected: Boolean) {
-            if (selected) {
-                selectedItems.add(bindingAdapterPosition)
-            } else {
-                selectedItems.remove(bindingAdapterPosition)
-            }
-            notifyItemChanged(bindingAdapterPosition)
-        }
     }
+
+    data class ExhibitedPlayer(
+        val player: Player,
+        val name: String,
+        val selected: Boolean,
+    )
 }

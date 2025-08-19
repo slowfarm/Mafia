@@ -1,4 +1,4 @@
-package com.eva.inc.mafia.ui.activity.moves
+package com.eva.inc.mafia.ui.activity
 
 import android.content.Context
 import android.content.Intent
@@ -8,7 +8,6 @@ import com.eva.inc.mafia.databinding.ActivityMovesBinding
 import com.eva.inc.mafia.domain.GameFlowManager
 import com.eva.inc.mafia.domain.repository.DomainRepository
 import com.eva.inc.mafia.ui.activity.base.BaseActivity
-import com.eva.inc.mafia.ui.activity.game.GameActivity
 import com.eva.inc.mafia.ui.adapter.MovesPagerAdapter
 import com.eva.inc.mafia.ui.entity.Moves
 import com.eva.inc.mafia.ui.entity.Player

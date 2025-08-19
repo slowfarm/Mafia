@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import com.eva.inc.mafia.databinding.ActivityMainBinding
 import com.eva.inc.mafia.ui.activity.base.BaseActivity
-import com.eva.inc.mafia.ui.activity.game.GameActivity
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
     override val bindingInflater: (LayoutInflater) -> ActivityMainBinding =

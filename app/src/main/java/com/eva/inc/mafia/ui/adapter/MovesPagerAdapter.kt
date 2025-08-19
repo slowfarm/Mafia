@@ -11,13 +11,13 @@ import com.eva.inc.mafia.ui.entity.Moves.MafiaMeetUp
 import com.eva.inc.mafia.ui.entity.Moves.NightAction
 import com.eva.inc.mafia.ui.entity.Moves.RoleAssignment
 import com.eva.inc.mafia.ui.entity.Moves.Vote
-import com.eva.inc.mafia.ui.fragment.dayturn.DayTurnFragment
-import com.eva.inc.mafia.ui.fragment.endgame.EndGameFragment
-import com.eva.inc.mafia.ui.fragment.lastwill.LastWillFragment
-import com.eva.inc.mafia.ui.fragment.mafiameetup.MafiaMeetUpFragment
-import com.eva.inc.mafia.ui.fragment.nightaction.NightActionFragment
-import com.eva.inc.mafia.ui.fragment.roleassignment.RoleAssignmentFragment
-import com.eva.inc.mafia.ui.fragment.vote.VoteFragment
+import com.eva.inc.mafia.ui.fragment.DayTurnFragment
+import com.eva.inc.mafia.ui.fragment.EndGameFragment
+import com.eva.inc.mafia.ui.fragment.LastWillFragment
+import com.eva.inc.mafia.ui.fragment.MafiaMeetUpFragment
+import com.eva.inc.mafia.ui.fragment.NightActionFragment
+import com.eva.inc.mafia.ui.fragment.RoleAssignmentFragment
+import com.eva.inc.mafia.ui.fragment.VoteFragment
 
 class MovesPagerAdapter(
     fragmentActivity: FragmentActivity,

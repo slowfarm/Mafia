@@ -1,4 +1,4 @@
-package com.eva.inc.mafia.ui.fragment.roleassignment
+package com.eva.inc.mafia.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,9 +22,9 @@ class RoleAssignmentFragment : BaseFragment<FragmentRoleAssignmentBinding>() {
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
-        binding.textView.text =
-            "${roleAssignment.player.name} получает роль: ${getString(roleAssignment.player.role.title)}"
-        binding.imageView.setImageResource(roleAssignment.player.role.drawable)
+        binding.tvPlayer.text = "${roleAssignment.player.name} получает роль"
+        binding.tvRole.setText(roleAssignment.player.role.title)
+        binding.imgIcon.setImageResource(roleAssignment.player.role.drawable)
     }
 
     companion object {

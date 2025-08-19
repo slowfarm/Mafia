@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:padding="@dimen/dp24">
@@ -17,9 +18,10 @@
         android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewPlayers"
+        android:id="@+id/rvPlayerStatistic"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        tools:listitem="@layout/list_item_player_statistic"
         android:layout_weight="1"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 

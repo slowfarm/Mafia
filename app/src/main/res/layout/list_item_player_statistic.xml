@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/dp16">
+
+    <ImageView
+        android:id="@+id/imgIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:src="@drawable/ic_mafia" />
+
+    <TextView
+        android:id="@+id/textViewPlayerName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp16"
+        android:layout_weight="1"
+        android:textSize="@dimen/sp16"
+        tools:text="Игрок №1 Player 1" />
+
+    <TextView
+        android:id="@+id/textViewPlayerRole"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp16"
+        android:textStyle="italic"
+        tools:text="Мирный" />
+
+    <ImageView
+        android:id="@+id/imgEliminated"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_eliminated" />
+
+</LinearLayout>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
+    android:gravity="center"
     android:orientation="vertical"
     android:padding="@dimen/dp16">
 
@@ -13,13 +13,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/dp16"
-        android:textSize="@dimen/sp18" />
+        android:textSize="@dimen/sp18"
+        tools:text="Ночное действие" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewPlayers"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:paddingBottom="@dimen/dp16"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/list_item_exhibited_player" />
@@ -36,6 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/dp16"
-        android:textSize="@dimen/sp16" />
+        android:textSize="@dimen/sp16"
+        tools:text="Результат ночного действия" />
 
 </LinearLayout>
