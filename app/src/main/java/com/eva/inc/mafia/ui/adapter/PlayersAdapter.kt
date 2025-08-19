@@ -1,77 +1,64 @@
 package com.eva.inc.mafia.ui.adapter
 
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.ViewGroup
-import androidx.appcompat.widget.PopupMenu
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.eva.inc.mafia.R
 import com.eva.inc.mafia.databinding.ListItemPlayerBinding
-import com.eva.inc.mafia.ui.adapter.PlayersAdapter.PlayerViewHolder
 import com.eva.inc.mafia.ui.entity.Player
-import com.eva.inc.mafia.ui.entity.Player.Companion.getUniqueRoles
-import com.eva.inc.mafia.ui.entity.Role
 
-class PlayersAdapter : RecyclerView.Adapter<PlayerViewHolder>() {
-    private val items = mutableListOf<Player>()
+class PlayersAdapter : RecyclerView.Adapter<PlayersAdapter.PlayerViewHolder>() {
+    private val items =
+        mutableListOf<Player>().apply {
+            for (i in 1..6) add(Player.create(i, "Player $i"))
+        }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = PlayerViewHolder(
+    val players: List<Player> get() = items.toList()
+
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ) = PlayerViewHolder(
         ListItemPlayerBinding.inflate(LayoutInflater.from(parent.context), parent, false),
     )
 
-    override fun onBindViewHolder(holder: PlayerViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: PlayerViewHolder,
+        position: Int,
+    ) {
         holder.bind(items[position])
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount() = items.size
 
     fun addItem() {
-        val position = items.size + 1
-        items.add(Player.create(position))
+        val position = items.size
+        items.add(Player.create(position + 1))
         notifyItemInserted(position)
     }
 
-    fun getRoles() = items.getUniqueRoles()
-
-    inner class PlayerViewHolder(private val binding: ListItemPlayerBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(item: Player) {
-            val context = binding.root.context
-
-            binding.btnNumber.text = item.number.toString()
-
-            binding.etName.hint = context.getString(R.string.input_name)
-            item.name?.let { binding.etName.setText(it) }
-            binding.etName.doAfterTextChanged { text ->
-                updatePlayer { it.copy(name = text.toString()) }
-            }
-
-            item.role?.let { binding.btnRole.setText(it.title) }
-            binding.btnRole.setOnClickListener { view ->
-                PopupMenu(context, view).apply {
-                    Role.entries.forEach { menu.add(0, it.itemId, Menu.NONE, it.title) }
-
-                    setOnMenuItemClickListener { menuItem ->
-                        updatePlayer(true) { it.copy(role = Role.fromItemId(menuItem.itemId)) }
-                        true
-                    }
-                }.show()
-            }
-
-            binding.etWinningPoint.hint = context.getString(R.string.point_hint)
-            item.winningPoint?.let { binding.etWinningPoint.setText(it.toString()) }
-            binding.etWinningPoint.doAfterTextChanged { text ->
-                updatePlayer { it.copy(winningPoint = text.toString().toFloatOrNull() ?: 0f) }
-            }
-
-            binding.etAdditionalPoint.hint = context.getString(R.string.point_hint)
-            item.additionalPoint?.let { binding.etAdditionalPoint.setText(it.toString()) }
-            binding.etAdditionalPoint.doAfterTextChanged { text ->
-                updatePlayer { it.copy(additionalPoint = text.toString().toFloatOrNull() ?: 0f) }
-            }
+    fun removeItem() {
+        if (items.isNotEmpty()) {
+            val position = items.lastIndex
+            items.removeAt(position)
+            notifyItemRemoved(position)
         }
+    }
+
+    inner class PlayerViewHolder(
+        private val binding: ListItemPlayerBinding,
+    ) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: Player) =
+            with(binding) {
+                val context = root.context
+
+                btnNumber.text = item.number.toString()
+                etName.hint = context.getString(R.string.input_name)
+                if (etName.text.toString() != item.name) etName.setText(item.name)
+
+                etName.doAfterTextChanged { text -> updatePlayer { it.copy(name = text.toString()) } }
+            }
 
         private inline fun updatePlayer(
             notify: Boolean = false,

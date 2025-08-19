@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp4">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnNumber"
+        android:layout_width="@dimen/dp0"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="1" />
+
+    <EditText
+        android:id="@+id/etName"
+        android:layout_width="@dimen/dp0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp4"
+        android:layout_weight="3.6"
+        android:inputType="textPersonName"
+        tools:hint="Пескарик" />
+
+</LinearLayout>
