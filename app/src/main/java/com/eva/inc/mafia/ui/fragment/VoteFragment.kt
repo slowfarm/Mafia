@@ -26,17 +26,18 @@ class VoteFragment : BaseFragment<FragmentVoteBinding>() {
         binding.recyclerViewExhibitedPlayers.adapter = adapter
 
         binding.btnRemoveSelected.setOnClickListener {
-            DomainRepository.removePlayers(adapter.getSelectedPlayers())
+            DomainRepository.setPendingEliminatedPlayers(adapter.getSelectedPlayers())
         }
 
         collectWithLifecycle(DomainRepository.exhibitedPlayers) { players ->
-            val items = players.map {
-                ExhibitedPlayersAdapter.ExhibitedPlayer(
-                    it,
-                    it.toString(),
-                    false,
-                )
-            }
+            val items =
+                players.map {
+                    ExhibitedPlayersAdapter.ExhibitedPlayer(
+                        it,
+                        it.toString(),
+                        false,
+                    )
+                }
             adapter.setItems(items)
         }
     }

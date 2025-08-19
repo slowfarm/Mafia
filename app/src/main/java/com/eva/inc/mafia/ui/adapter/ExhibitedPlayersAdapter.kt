@@ -7,8 +7,9 @@ import com.eva.inc.mafia.databinding.ListItemExhibitedPlayerBinding
 import com.eva.inc.mafia.ui.adapter.ExhibitedPlayersAdapter.ExhibitedPlayersViewHolder
 import com.eva.inc.mafia.ui.entity.Player
 
-class ExhibitedPlayersAdapter(private val singleSelection: Boolean = false) :
-    RecyclerView.Adapter<ExhibitedPlayersViewHolder>() {
+class ExhibitedPlayersAdapter(
+    private val singleSelection: Boolean = false,
+) : RecyclerView.Adapter<ExhibitedPlayersViewHolder>() {
     private var items = mutableListOf<ExhibitedPlayer>()
 
     override fun onCreateViewHolder(

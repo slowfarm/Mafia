@@ -10,9 +10,6 @@ class GameFlowManager(
 ) {
     private val movesList = mutableListOf<Moves>()
     private var phaseState = PhaseState.ROLE_ASSIGNMENT
-    private val playersHistory = mutableListOf<List<Player>>()
-    private val exhibitedHistory = mutableListOf<Set<Player>>()
-    private val pendingEliminatedPlayers = mutableListOf<Player>()
     private var lastWillStartIndex = -1
 
     private var wasNightPhase = false
@@ -23,14 +20,12 @@ class GameFlowManager(
     fun startGame(): Moves? {
         resetState()
         movesList.clear()
-        playersHistory.clear()
-        exhibitedHistory.clear()
         return nextSingleMove()
     }
 
     private fun resetState() {
         phaseState = PhaseState.ROLE_ASSIGNMENT
-        pendingEliminatedPlayers.clear()
+        domainRepository.pendingPlayers.clear()
         wasNightPhase = false
         currentDayTurnIndex = 0
         currentRoleAssignmentIndex = 0
@@ -40,6 +35,7 @@ class GameFlowManager(
 
     fun nextSingleMove(): Moves? {
         val currentPlayers = domainRepository.players.value
+        val allPlayers = domainRepository.allPlayers
 
         if (phaseState == PhaseState.END) return null
 
@@ -70,19 +66,19 @@ class GameFlowManager(
                     }
                 PhaseState.NIGHT_DON ->
                     nextNightRoleMove(
-                        currentPlayers,
+                        allPlayers,
                         Role.DON,
                         PhaseState.NIGHT_SHERIFF,
                     )
                 PhaseState.NIGHT_SHERIFF ->
                     nextNightRoleMove(
-                        currentPlayers,
+                        allPlayers,
                         Role.SHERIFF,
                         PhaseState.NIGHT_DOCTOR,
                     )
                 PhaseState.NIGHT_DOCTOR ->
                     nextNightRoleMove(
-                        currentPlayers,
+                        allPlayers,
                         Role.DOCTOR,
                         PhaseState.CHECK_WIN,
                     )
@@ -124,13 +120,14 @@ class GameFlowManager(
     }
 
     private fun nextLastWillMove(): Moves? =
-        if (pendingEliminatedPlayers.isNotEmpty() && lastWillStartIndex >= 0 && lastWillStartIndex <= movesList.size) {
+        if (domainRepository.pendingPlayers.isNotEmpty() && lastWillStartIndex >= 0 && lastWillStartIndex <= movesList.size) {
             val showed =
                 movesList.subList(lastWillStartIndex, movesList.size).count { it is Moves.LastWill }
-            if (showed < pendingEliminatedPlayers.size) {
-                val move = Moves.LastWill(pendingEliminatedPlayers[showed])
-                if (showed == pendingEliminatedPlayers.size - 1) {
-                    pendingEliminatedPlayers.clear()
+            if (showed < domainRepository.pendingPlayers.size) {
+                val move = Moves.LastWill(domainRepository.pendingPlayers[showed])
+                if (showed == domainRepository.pendingPlayers.size - 1) {
+                    domainRepository.removePendingPlayers()
+                    domainRepository.pendingPlayers.clear()
                     phaseState = PhaseState.CHECK_WIN
                     lastWillStartIndex = -1
                 }
@@ -148,7 +145,9 @@ class GameFlowManager(
         }
 
     private fun nextCheckWinMove(players: List<Player>): Moves? {
-        if (pendingEliminatedPlayers.isNotEmpty()) {
+        if (domainRepository.pendingPlayers.isNotEmpty()) {
+            lastWillStartIndex = movesList.size
+            phaseState = PhaseState.LAST_WILL
             return null
         }
         return if (getWinCondition(players)) {

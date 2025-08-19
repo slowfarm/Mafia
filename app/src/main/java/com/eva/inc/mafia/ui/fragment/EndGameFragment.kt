@@ -33,14 +33,15 @@ class EndGameFragment : BaseFragment<FragmentEndGameBinding>() {
         val adapter = PlayersResultAdapter()
         binding.rvPlayerStatistic.adapter = adapter
 
-        val items = DomainRepository.allPlayers.map {
-            PlayersResultAdapter.PlayerResult(
-                it.role.drawable,
-                it.toString(),
-                it.role.title,
-                !players.contains(it),
-            )
-        }
+        val items =
+            DomainRepository.allPlayers.map {
+                PlayersResultAdapter.PlayerResult(
+                    it.role.drawable,
+                    it.toString(),
+                    it.role.title,
+                    !players.contains(it),
+                )
+            }
         adapter.setItems(items)
     }
 

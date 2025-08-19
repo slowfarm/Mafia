@@ -25,7 +25,7 @@ class LastWillFragment : BaseFragment<FragmentLastWillBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         val player = lastWill.player
-        binding.textViewPlayerName.text = "Игрок ${player}}"
+        binding.textViewPlayerName.text = player.toString()
         binding.textViewPlayerRole.text = "Роль: ${getString(player.role.title)}"
     }
 

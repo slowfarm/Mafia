@@ -42,13 +42,14 @@ class NightActionFragment : BaseFragment<FragmentNightActionBinding>() {
         }
 
         collectWithLifecycle(DomainRepository.players) { players ->
-            val items = players.map {
-                ExhibitedPlayersAdapter.ExhibitedPlayer(
-                    it,
-                    it.toString(),
-                    false,
-                )
-            }
+            val items =
+                players.map {
+                    ExhibitedPlayersAdapter.ExhibitedPlayer(
+                        it,
+                        it.toString(),
+                        false,
+                    )
+                }
             adapter.setItems(items)
         }
     }
@@ -63,7 +64,7 @@ class NightActionFragment : BaseFragment<FragmentNightActionBinding>() {
                 val item = adapter.getSelectedPlayers().firstOrNull()
                 if (item != null) {
                     textViewResult.text = "$item убран мафией"
-                    DomainRepository.removePlayers(listOf(item))
+                    DomainRepository.setPendingEliminatedPlayers(listOf(item))
                 }
             }
         }
