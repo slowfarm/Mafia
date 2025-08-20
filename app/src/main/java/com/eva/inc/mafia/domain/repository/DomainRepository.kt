@@ -1,11 +1,19 @@
 package com.eva.inc.mafia.domain.repository
 
+import android.content.Context
+import androidx.core.content.edit
+import com.eva.inc.mafia.ui.entity.GameSnapshot
 import com.eva.inc.mafia.ui.entity.Player
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-object DomainRepository {
+class DomainRepository(
+    private val context: Context,
+) {
+    private val gson = Gson()
+
     private val _players = MutableStateFlow<List<Player>>(emptyList())
     val players: StateFlow<List<Player>> = _players.asStateFlow()
 
@@ -14,7 +22,7 @@ object DomainRepository {
 
     var pendingPlayers = mutableSetOf<Player>()
 
-    var allPlayers: List<Player> = emptyList()
+    var allPlayers = emptyList<Player>()
         private set
 
     fun setPlayers(players: List<Player>) {
@@ -37,5 +45,37 @@ object DomainRepository {
 
     fun resetExhibited() {
         _exhibitedPlayers.value = emptySet()
+    }
+
+    fun addSnapshot(snapshot: GameSnapshot) {
+        saveSnapshotToPrefs(snapshot)
+    }
+
+    fun saveSnapshotToPrefs(snapshot: GameSnapshot?) {
+        val json = snapshot?.let { serializeSnapshots(it) }
+        getSharedPreferences().edit { putString(KEY_SNAPSHOTS, json) }
+    }
+
+    fun loadSnapshotFromPrefs(): GameSnapshot? {
+        val json = getSharedPreferences().getString(KEY_SNAPSHOTS, null)
+        return json?.let { deserializeSnapshots(it) }
+    }
+
+    private fun getSharedPreferences() = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
+    private fun serializeSnapshots(snapshots: GameSnapshot): String = gson.toJson(snapshots)
+
+    private fun deserializeSnapshots(json: String): GameSnapshot? = gson.fromJson(json, GameSnapshot::class.java)
+
+    fun restore(snapshot: GameSnapshot) {
+        _players.value = snapshot.players
+        _exhibitedPlayers.value = snapshot.exhibitedPlayers.toSet()
+        pendingPlayers = snapshot.pendingPlayers.toMutableSet()
+        allPlayers = snapshot.allPlayers
+    }
+
+    companion object {
+        private const val PREFS_NAME = "game_prefs"
+        private const val KEY_SNAPSHOTS = "snapshots"
     }
 }

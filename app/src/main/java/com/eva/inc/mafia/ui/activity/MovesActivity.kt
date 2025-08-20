@@ -6,10 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import com.eva.inc.mafia.databinding.ActivityMovesBinding
 import com.eva.inc.mafia.domain.GameFlowManager
-import com.eva.inc.mafia.domain.repository.DomainRepository
+import com.eva.inc.mafia.ui.App
 import com.eva.inc.mafia.ui.activity.base.BaseActivity
 import com.eva.inc.mafia.ui.adapter.MovesPagerAdapter
-import com.eva.inc.mafia.ui.entity.Moves
+import com.eva.inc.mafia.ui.entity.Move
 import com.eva.inc.mafia.ui.entity.Player
 import com.eva.inc.mafia.ui.utils.collectWithLifecycle
 import com.eva.inc.mafia.ui.utils.lazyUi
@@ -19,7 +19,8 @@ class MovesActivity : BaseActivity<ActivityMovesBinding>() {
         ActivityMovesBinding::inflate
 
     private val adapter by lazyUi { MovesPagerAdapter(this) }
-    private val manager = GameFlowManager()
+    private val domainRepository = App.get().domainRepository
+    private val manager = GameFlowManager(domainRepository)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,16 +34,19 @@ class MovesActivity : BaseActivity<ActivityMovesBinding>() {
 
         binding.btnNextMove.setOnClickListener {
             manager.nextSingleMove()?.let {
-                if (it == Moves.EndGame) {
+                if (it == Move.EndGame) {
                     binding.btnNextMove.text = "Новая игра"
-                    binding.btnNextMove.setOnClickListener { GameActivity.start(this) }
+                    binding.btnNextMove.setOnClickListener {
+                        domainRepository.saveSnapshotToPrefs(null)
+                        GameActivity.start(this)
+                    }
                 }
                 adapter.addItem(it)
                 binding.viewPager.currentItem = adapter.itemCount - 1
             }
         }
 
-        collectWithLifecycle(DomainRepository.exhibitedPlayers) { players ->
+        collectWithLifecycle(domainRepository.exhibitedPlayers) { players ->
             updateToolbarTitle(players)
         }
     }

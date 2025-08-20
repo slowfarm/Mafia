@@ -3,14 +3,14 @@ package com.eva.inc.mafia.ui.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.eva.inc.mafia.ui.entity.Moves
-import com.eva.inc.mafia.ui.entity.Moves.DayTurn
-import com.eva.inc.mafia.ui.entity.Moves.EndGame
-import com.eva.inc.mafia.ui.entity.Moves.LastWill
-import com.eva.inc.mafia.ui.entity.Moves.MafiaMeetUp
-import com.eva.inc.mafia.ui.entity.Moves.NightAction
-import com.eva.inc.mafia.ui.entity.Moves.RoleAssignment
-import com.eva.inc.mafia.ui.entity.Moves.Vote
+import com.eva.inc.mafia.ui.entity.Move
+import com.eva.inc.mafia.ui.entity.Move.DayTurn
+import com.eva.inc.mafia.ui.entity.Move.EndGame
+import com.eva.inc.mafia.ui.entity.Move.LastWill
+import com.eva.inc.mafia.ui.entity.Move.MafiaMeetUp
+import com.eva.inc.mafia.ui.entity.Move.NightAction
+import com.eva.inc.mafia.ui.entity.Move.RoleAssignment
+import com.eva.inc.mafia.ui.entity.Move.Vote
 import com.eva.inc.mafia.ui.fragment.DayTurnFragment
 import com.eva.inc.mafia.ui.fragment.EndGameFragment
 import com.eva.inc.mafia.ui.fragment.LastWillFragment
@@ -22,7 +22,7 @@ import com.eva.inc.mafia.ui.fragment.VoteFragment
 class MovesPagerAdapter(
     fragmentActivity: FragmentActivity,
 ) : FragmentStateAdapter(fragmentActivity) {
-    private var items = mutableListOf<Moves>()
+    private var items = mutableListOf<Move>()
 
     override fun getItemCount() = items.size
 
@@ -39,13 +39,13 @@ class MovesPagerAdapter(
         }
     }
 
-    fun setItems(items: List<Moves>) {
+    fun setItems(items: List<Move>) {
         this.items.clear()
         this.items.addAll(items)
         notifyDataSetChanged()
     }
 
-    fun addItem(move: Moves) {
+    fun addItem(move: Move) {
         items.add(move)
         notifyItemInserted(items.size - 1)
     }

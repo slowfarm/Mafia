@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.eva.inc.mafia.databinding.FragmentDayTurnBinding
-import com.eva.inc.mafia.domain.repository.DomainRepository
+import com.eva.inc.mafia.ui.App
 import com.eva.inc.mafia.ui.adapter.VoteArrayAdapter
-import com.eva.inc.mafia.ui.entity.Moves
+import com.eva.inc.mafia.ui.entity.Move
 import com.eva.inc.mafia.ui.entity.Player
 import com.eva.inc.mafia.ui.fragment.base.BaseFragment
 import com.eva.inc.mafia.ui.utils.collectWithLifecycle
@@ -18,7 +18,9 @@ class DayTurnFragment : BaseFragment<FragmentDayTurnBinding>() {
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentDayTurnBinding =
         FragmentDayTurnBinding::inflate
 
-    private val dayTurn: Moves.DayTurn by lazy { arguments.getParcelableCompat(ARG_DAY_TURN) }
+    private val domainRepository = App.get().domainRepository
+
+    private val dayTurn: Move.DayTurn by lazy { arguments.getParcelableCompat(ARG_DAY_TURN) }
 
     override fun onViewCreated(
         view: View,
@@ -32,10 +34,10 @@ class DayTurnFragment : BaseFragment<FragmentDayTurnBinding>() {
 
         binding.btnVoteConfirm.setOnClickListener {
             val player = (binding.spinnerVote.selectedItem as? Player)
-            player?.let { DomainRepository.addExhibitedPlayer(it) }
+            player?.let { domainRepository.addExhibitedPlayer(it) }
         }
 
-        collectWithLifecycle(DomainRepository.players) {
+        collectWithLifecycle(domainRepository.players) {
             val adapter = VoteArrayAdapter(requireContext(), it)
             adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
             binding.spinnerVote.adapter = adapter
@@ -50,7 +52,7 @@ class DayTurnFragment : BaseFragment<FragmentDayTurnBinding>() {
     companion object {
         private const val ARG_DAY_TURN = "arg_day_turn"
 
-        fun newInstance(dayTurn: Moves.DayTurn): DayTurnFragment =
+        fun newInstance(dayTurn: Move.DayTurn): DayTurnFragment =
             DayTurnFragment().apply {
                 arguments =
                     Bundle().apply {

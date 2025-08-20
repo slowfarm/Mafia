@@ -11,13 +11,15 @@ import androidx.core.view.MenuProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.eva.inc.mafia.R
 import com.eva.inc.mafia.databinding.ActivityGameBinding
-import com.eva.inc.mafia.domain.repository.DomainRepository
+import com.eva.inc.mafia.ui.App
 import com.eva.inc.mafia.ui.activity.base.BaseActivity
 import com.eva.inc.mafia.ui.adapter.PlayersAdapter
 
 class GameActivity : BaseActivity<ActivityGameBinding>() {
     override val bindingInflater: (LayoutInflater) -> ActivityGameBinding =
         ActivityGameBinding::inflate
+
+    private val domainRepository = App.get().domainRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +59,7 @@ class GameActivity : BaseActivity<ActivityGameBinding>() {
                             true
                         }
                         R.id.action_play -> {
-                            DomainRepository.setPlayers(adapter.players)
+                            domainRepository.setPlayers(adapter.players)
                             MovesActivity.start(this@GameActivity)
                             true
                         }

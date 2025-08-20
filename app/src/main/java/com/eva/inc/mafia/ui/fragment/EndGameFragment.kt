@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.eva.inc.mafia.databinding.FragmentEndGameBinding
-import com.eva.inc.mafia.domain.repository.DomainRepository
+import com.eva.inc.mafia.ui.App
 import com.eva.inc.mafia.ui.adapter.PlayersResultAdapter
 import com.eva.inc.mafia.ui.entity.Role
 import com.eva.inc.mafia.ui.fragment.base.BaseFragment
@@ -14,13 +14,15 @@ class EndGameFragment : BaseFragment<FragmentEndGameBinding>() {
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentEndGameBinding =
         FragmentEndGameBinding::inflate
 
+    private val domainRepository = App.get().domainRepository
+
     override fun onViewCreated(
         view: View,
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        val players = DomainRepository.players.value
+        val players = domainRepository.players.value
 
         val mafiaCount = players.count { it.role == Role.MAFIA }
         val donCount = players.count { it.role == Role.DON }
@@ -34,7 +36,7 @@ class EndGameFragment : BaseFragment<FragmentEndGameBinding>() {
         binding.rvPlayerStatistic.adapter = adapter
 
         val items =
-            DomainRepository.allPlayers.map {
+            domainRepository.allPlayers.map {
                 PlayersResultAdapter.PlayerResult(
                     it.role.drawable,
                     it.toString(),

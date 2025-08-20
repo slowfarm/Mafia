@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.eva.inc.mafia.databinding.FragmentNightActionBinding
-import com.eva.inc.mafia.domain.repository.DomainRepository
+import com.eva.inc.mafia.ui.App
 import com.eva.inc.mafia.ui.adapter.ExhibitedPlayersAdapter
-import com.eva.inc.mafia.ui.entity.Moves
+import com.eva.inc.mafia.ui.entity.Move
 import com.eva.inc.mafia.ui.entity.Role
 import com.eva.inc.mafia.ui.fragment.base.BaseFragment
 import com.eva.inc.mafia.ui.utils.collectWithLifecycle
@@ -18,7 +18,9 @@ class NightActionFragment : BaseFragment<FragmentNightActionBinding>() {
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentNightActionBinding =
         FragmentNightActionBinding::inflate
 
-    private val nightAction: Moves.NightAction by lazy {
+    private val domainRepository = App.get().domainRepository
+
+    private val nightAction: Move.NightAction by lazy {
         arguments.getParcelableCompat(ARG_NIGHT_ACTION)
     }
 
@@ -41,7 +43,7 @@ class NightActionFragment : BaseFragment<FragmentNightActionBinding>() {
             else -> setupForOthers()
         }
 
-        collectWithLifecycle(DomainRepository.players) { players ->
+        collectWithLifecycle(domainRepository.players) { players ->
             val items =
                 players.map {
                     ExhibitedPlayersAdapter.ExhibitedPlayer(
@@ -64,7 +66,7 @@ class NightActionFragment : BaseFragment<FragmentNightActionBinding>() {
                 val item = adapter.getSelectedPlayers().firstOrNull()
                 if (item != null) {
                     textViewResult.text = "$item убран мафией"
-                    DomainRepository.pendingPlayers.add(item)
+                    domainRepository.pendingPlayers.add(item)
                 }
             }
         }
@@ -107,7 +109,7 @@ class NightActionFragment : BaseFragment<FragmentNightActionBinding>() {
     companion object {
         private const val ARG_NIGHT_ACTION = "arg_night_action"
 
-        fun newInstance(nightAction: Moves.NightAction): NightActionFragment =
+        fun newInstance(nightAction: Move.NightAction): NightActionFragment =
             NightActionFragment().apply {
                 arguments =
                     Bundle().apply {

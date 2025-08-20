@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.eva.inc.mafia.databinding.FragmentVoteBinding
-import com.eva.inc.mafia.domain.repository.DomainRepository
+import com.eva.inc.mafia.ui.App
 import com.eva.inc.mafia.ui.adapter.ExhibitedPlayersAdapter
 import com.eva.inc.mafia.ui.fragment.base.BaseFragment
 import com.eva.inc.mafia.ui.utils.collectWithLifecycle
@@ -14,6 +14,8 @@ import com.eva.inc.mafia.ui.utils.lazyUi
 class VoteFragment : BaseFragment<FragmentVoteBinding>() {
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentVoteBinding =
         FragmentVoteBinding::inflate
+
+    private val domainRepository = App.get().domainRepository
 
     private val adapter by lazyUi { ExhibitedPlayersAdapter() }
 
@@ -26,10 +28,10 @@ class VoteFragment : BaseFragment<FragmentVoteBinding>() {
         binding.recyclerViewExhibitedPlayers.adapter = adapter
 
         binding.btnRemoveSelected.setOnClickListener {
-            DomainRepository.pendingPlayers.addAll(adapter.getSelectedPlayers())
+            domainRepository.pendingPlayers.addAll(adapter.getSelectedPlayers())
         }
 
-        collectWithLifecycle(DomainRepository.exhibitedPlayers) { players ->
+        collectWithLifecycle(domainRepository.exhibitedPlayers) { players ->
             val items =
                 players.map {
                     ExhibitedPlayersAdapter.ExhibitedPlayer(

@@ -1,11 +1,12 @@
 package com.eva.inc.mafia.domain
 
 import com.eva.inc.mafia.domain.repository.DomainRepository
-import com.eva.inc.mafia.ui.entity.Moves
+import com.eva.inc.mafia.ui.entity.GameSnapshot
+import com.eva.inc.mafia.ui.entity.Move
 import com.eva.inc.mafia.ui.entity.Role
 
 class GameFlowManager(
-    private val domainRepository: DomainRepository = DomainRepository,
+    private val domainRepository: DomainRepository,
 ) {
     private var phaseState = PhaseState.ROLE_ASSIGNMENT
     private var wasNightPhase = false
@@ -13,12 +14,23 @@ class GameFlowManager(
     private var currentRoleAssignmentIndex = 0
     private var isNewDayTurn = true
 
-    fun startGame(): Moves? {
-        resetState()
+    fun startGame(): Move? {
+        val snapshot = domainRepository.loadSnapshotFromPrefs()
+
+        if (snapshot != null) {
+            domainRepository.restore(snapshot)
+            phaseState = PhaseState.valueOf(snapshot.phaseState)
+            wasNightPhase = snapshot.wasNightPhase
+            currentDayTurnIndex = snapshot.currentDayTurnIndex
+            currentRoleAssignmentIndex = snapshot.currentRoleAssignmentIndex
+            isNewDayTurn = snapshot.isNewDayTurn
+        } else {
+            resetState()
+        }
         return nextSingleMove()
     }
 
-    fun nextSingleMove(): Moves? {
+    fun nextSingleMove(): Move? {
         if (phaseState == PhaseState.END) return null
 
         val move =
@@ -26,7 +38,7 @@ class GameFlowManager(
                 PhaseState.ROLE_ASSIGNMENT -> nextRoleAssignmentMove()
                 PhaseState.MAFIA_MEETUP -> nextMafiaMeetup()
                 PhaseState.DAY_TURN -> nextDayTurnMove()
-                PhaseState.VOTE -> getMoveAndSetPhase(Moves.Vote, PhaseState.CHECK_WIN)
+                PhaseState.VOTE -> getMoveAndSetPhase(Move.Vote, PhaseState.CHECK_WIN)
                 PhaseState.LAST_WILL -> nextLastWillMove()
                 PhaseState.CHECK_WIN -> nextCheckWinMove()
                 PhaseState.NIGHT_MAFIA -> nextNightMafiaMove()
@@ -48,17 +60,17 @@ class GameFlowManager(
         isNewDayTurn = true
     }
 
-    private fun nextMafiaMeetup(): Moves? {
+    private fun nextMafiaMeetup(): Move? {
         currentDayTurnIndex = 0
         wasNightPhase = false
         isNewDayTurn = true
-        return getMoveAndSetPhase(Moves.MafiaMeetUp, PhaseState.DAY_TURN)
+        return getMoveAndSetPhase(Move.MafiaMeetUp, PhaseState.DAY_TURN)
     }
 
-    private fun nextRoleAssignmentMove(): Moves? {
+    private fun nextRoleAssignmentMove(): Move? {
         val players = domainRepository.players.value
         return if (currentRoleAssignmentIndex < players.size) {
-            val move = Moves.RoleAssignment(players[currentRoleAssignmentIndex])
+            val move = Move.RoleAssignment(players[currentRoleAssignmentIndex])
             currentRoleAssignmentIndex++
             getMoveAndSetPhase(
                 move,
@@ -70,31 +82,27 @@ class GameFlowManager(
         }
     }
 
-    private fun nextDayTurnMove(): Moves? {
+    private fun nextDayTurnMove(): Move? {
         if (isNewDayTurn) {
             currentDayTurnIndex = 0
             isNewDayTurn = false
         }
         val players = domainRepository.players.value
         return if (currentDayTurnIndex < players.size) {
-            val move = Moves.DayTurn(players[currentDayTurnIndex])
+            val move = Move.DayTurn(players[currentDayTurnIndex])
             currentDayTurnIndex++
-            getMoveAndSetPhase(
-                move,
-                PhaseState.VOTE,
-                currentDayTurnIndex >= players.size,
-            )
+            getMoveAndSetPhase(move, PhaseState.VOTE, currentDayTurnIndex >= players.size)
         } else {
             getMoveAndSetPhase(null, PhaseState.VOTE)
         }
     }
 
-    private fun nextLastWillMove(): Moves? {
+    private fun nextLastWillMove(): Move? {
         val lastWillPlayer = domainRepository.pendingPlayers.firstOrNull()
         return if (lastWillPlayer != null) {
             domainRepository.removePendingPlayers(lastWillPlayer)
             getMoveAndSetPhase(
-                Moves.LastWill(lastWillPlayer),
+                Move.LastWill(lastWillPlayer),
                 PhaseState.CHECK_WIN,
                 domainRepository.pendingPlayers.isEmpty(),
             )
@@ -103,36 +111,38 @@ class GameFlowManager(
         }
     }
 
-    private fun nextCheckWinMove(): Moves? {
+    private fun nextCheckWinMove(): Move? {
         if (domainRepository.pendingPlayers.isNotEmpty()) {
             return getMoveAndSetPhase(null, PhaseState.LAST_WILL)
         }
         return if (getWinCondition()) {
-            getMoveAndSetPhase(Moves.EndGame, PhaseState.END)
+            getMoveAndSetPhase(Move.EndGame, PhaseState.END)
         } else {
-            val phase = if (wasNightPhase) PhaseState.DAY_TURN else PhaseState.NIGHT_MAFIA
-            if (wasNightPhase) {
-                wasNightPhase = false
-                isNewDayTurn = true
-            } else {
-                wasNightPhase = true
-            }
-            getMoveAndSetPhase(null, phase)
+            val nextPhase =
+                if (wasNightPhase) {
+                    wasNightPhase = false
+                    isNewDayTurn = true
+                    PhaseState.DAY_TURN
+                } else {
+                    wasNightPhase = true
+                    PhaseState.NIGHT_MAFIA
+                }
+            getMoveAndSetPhase(null, nextPhase)
         }
     }
 
-    private fun nextNightMafiaMove(): Moves? {
+    private fun nextNightMafiaMove(): Move? {
         wasNightPhase = true
-        return getMoveAndSetPhase(Moves.NightAction(Role.MAFIA), PhaseState.NIGHT_DON)
+        return getMoveAndSetPhase(Move.NightAction(Role.MAFIA), PhaseState.NIGHT_DON)
     }
 
     private fun nextNightRoleMove(
         role: Role,
         nextPhase: PhaseState,
-    ): Moves? {
+    ): Move? {
         val move =
             if (domainRepository.allPlayers.any { it.role == role }) {
-                Moves.NightAction(role)
+                Move.NightAction(role)
             } else {
                 null
             }
@@ -140,20 +150,34 @@ class GameFlowManager(
     }
 
     private fun getMoveAndSetPhase(
-        move: Moves?,
+        move: Move?,
         nextPhase: PhaseState,
         changePhase: Boolean = true,
-    ): Moves? {
+    ): Move? {
         if (changePhase) phaseState = nextPhase
+        if (move != null) domainRepository.addSnapshot(createSnapshot())
         return move
     }
 
     private fun getWinCondition(): Boolean {
         val players = domainRepository.players.value
-        val mafia = players.filter { it.role == Role.MAFIA || it.role == Role.DON }
-        val citizens = players - mafia
-        return mafia.isEmpty() || mafia.size >= citizens.size
+        val mafia = players.count { it.role == Role.MAFIA || it.role == Role.DON }
+        val citizens = players.size - mafia
+        return mafia == 0 || mafia >= citizens
     }
+
+    private fun createSnapshot() =
+        GameSnapshot(
+            players = domainRepository.players.value,
+            exhibitedPlayers = domainRepository.exhibitedPlayers.value.toList(),
+            pendingPlayers = domainRepository.pendingPlayers.toList(),
+            allPlayers = domainRepository.allPlayers,
+            phaseState = phaseState.name,
+            wasNightPhase = wasNightPhase,
+            currentDayTurnIndex = currentDayTurnIndex,
+            currentRoleAssignmentIndex = currentRoleAssignmentIndex,
+            isNewDayTurn = isNewDayTurn,
+        )
 
     private enum class PhaseState {
         ROLE_ASSIGNMENT,

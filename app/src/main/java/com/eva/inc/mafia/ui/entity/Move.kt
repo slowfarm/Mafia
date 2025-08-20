@@ -4,33 +4,33 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-sealed class Moves : Parcelable {
+sealed class Move : Parcelable {
     @Parcelize
     data class RoleAssignment(
         val player: Player,
-    ) : Moves()
+    ) : Move()
 
     @Parcelize
-    object MafiaMeetUp : Moves()
+    object MafiaMeetUp : Move()
 
     @Parcelize
     data class DayTurn(
         val player: Player,
-    ) : Moves()
+    ) : Move()
 
     @Parcelize
-    object Vote : Moves()
+    object Vote : Move()
 
     @Parcelize
     data class NightAction(
         val role: Role,
-    ) : Moves()
+    ) : Move()
 
     @Parcelize
     data class LastWill(
         val player: Player,
-    ) : Moves()
+    ) : Move()
 
     @Parcelize
-    object EndGame : Moves()
+    object EndGame : Move()
 }

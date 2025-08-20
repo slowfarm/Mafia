@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.eva.inc.mafia.databinding.FragmentRoleAssignmentBinding
-import com.eva.inc.mafia.ui.entity.Moves
+import com.eva.inc.mafia.ui.entity.Move
 import com.eva.inc.mafia.ui.fragment.base.BaseFragment
 import com.eva.inc.mafia.ui.utils.getParcelableCompat
 
@@ -13,7 +13,7 @@ class RoleAssignmentFragment : BaseFragment<FragmentRoleAssignmentBinding>() {
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentRoleAssignmentBinding =
         FragmentRoleAssignmentBinding::inflate
 
-    private val roleAssignment: Moves.RoleAssignment by lazy {
+    private val roleAssignment: Move.RoleAssignment by lazy {
         arguments.getParcelableCompat(ARG_ROLE_ASSIGNMENT)
     }
 
@@ -30,7 +30,7 @@ class RoleAssignmentFragment : BaseFragment<FragmentRoleAssignmentBinding>() {
     companion object {
         private const val ARG_ROLE_ASSIGNMENT = "arg_role_assignment"
 
-        fun newInstance(roleAssignment: Moves.RoleAssignment): RoleAssignmentFragment =
+        fun newInstance(roleAssignment: Move.RoleAssignment): RoleAssignmentFragment =
             RoleAssignmentFragment().apply {
                 arguments = Bundle().apply { putParcelable(ARG_ROLE_ASSIGNMENT, roleAssignment) }
             }
