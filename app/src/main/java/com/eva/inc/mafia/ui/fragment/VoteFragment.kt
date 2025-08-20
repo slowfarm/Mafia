@@ -26,7 +26,7 @@ class VoteFragment : BaseFragment<FragmentVoteBinding>() {
         binding.recyclerViewExhibitedPlayers.adapter = adapter
 
         binding.btnRemoveSelected.setOnClickListener {
-            DomainRepository.setPendingEliminatedPlayers(adapter.getSelectedPlayers())
+            DomainRepository.pendingPlayers.addAll(adapter.getSelectedPlayers())
         }
 
         collectWithLifecycle(DomainRepository.exhibitedPlayers) { players ->

@@ -12,7 +12,7 @@ object DomainRepository {
     private val _exhibitedPlayers = MutableStateFlow<Set<Player>>(emptySet())
     val exhibitedPlayers: StateFlow<Set<Player>> = _exhibitedPlayers.asStateFlow()
 
-    var pendingPlayers = mutableListOf<Player>()
+    var pendingPlayers = mutableSetOf<Player>()
 
     var allPlayers: List<Player> = emptyList()
         private set
@@ -29,13 +29,10 @@ object DomainRepository {
         _exhibitedPlayers.value = _exhibitedPlayers.value + player
     }
 
-    fun setPendingEliminatedPlayers(players: List<Player>) {
-        pendingPlayers = players.toMutableList()
-    }
-
-    fun removePendingPlayers() {
-        _players.value = _players.value - pendingPlayers
-        _exhibitedPlayers.value = _exhibitedPlayers.value - pendingPlayers
+    fun removePendingPlayers(player: Player) {
+        _players.value = _players.value - player
+        _exhibitedPlayers.value = _exhibitedPlayers.value - player
+        pendingPlayers.remove(player)
     }
 
     fun resetExhibited() {

@@ -64,7 +64,7 @@ class NightActionFragment : BaseFragment<FragmentNightActionBinding>() {
                 val item = adapter.getSelectedPlayers().firstOrNull()
                 if (item != null) {
                     textViewResult.text = "$item убран мафией"
-                    DomainRepository.setPendingEliminatedPlayers(listOf(item))
+                    DomainRepository.pendingPlayers.add(item)
                 }
             }
         }
