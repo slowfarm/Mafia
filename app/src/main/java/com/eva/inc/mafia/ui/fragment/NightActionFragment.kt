@@ -67,6 +67,7 @@ class NightActionFragment : BaseFragment<FragmentNightActionBinding>() {
                 if (item != null) {
                     textViewResult.text = "$item убран мафией"
                     domainRepository.pendingPlayers.add(item)
+                    domainRepository.addStep(Role.MAFIA, item)
                 }
             }
         }
@@ -80,7 +81,8 @@ class NightActionFragment : BaseFragment<FragmentNightActionBinding>() {
                 val item = adapter.getSelectedPlayers().firstOrNull()
                 if (item != null) {
                     val isSheriff = item.role == Role.SHERIFF
-                    textViewResult.text = "Игрок $item — ${if (!isSheriff) "не" else ""} Шериф"
+                    textViewResult.text = "$item — ${if (!isSheriff) "не" else ""} Шериф"
+                    domainRepository.addStep(Role.DON, item)
                 }
             }
         }
@@ -94,7 +96,8 @@ class NightActionFragment : BaseFragment<FragmentNightActionBinding>() {
                 val item = adapter.getSelectedPlayers().firstOrNull()
                 if (item != null) {
                     val isDon = item.role == Role.DON
-                    textViewResult.text = "Игрок $item — ${if (!isDon) "не" else ""} Дон"
+                    textViewResult.text = "$item — ${if (!isDon) "не" else ""} Дон"
+                    domainRepository.addStep(Role.SHERIFF, item)
                 }
             }
         }

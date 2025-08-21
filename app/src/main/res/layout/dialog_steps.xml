@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <include layout="@layout/list_item_move_header" />
+        <include layout="@layout/list_item_step_header" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvMoves"
@@ -25,7 +25,7 @@
             android:layout_weight="1"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="6"
-            tools:listitem="@layout/list_item_move" />
+            tools:listitem="@layout/list_item_step" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnClose"

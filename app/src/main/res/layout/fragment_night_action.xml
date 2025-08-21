@@ -19,24 +19,25 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewPlayers"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:paddingBottom="@dimen/dp16"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/list_item_exhibited_player" />
+
+    <TextView
+        android:id="@+id/textViewResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp16"
+        tools:text="Результат ночного действия" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnNightAction"
         style="@style/ButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Действие" />
-
-    <TextView
-        android:id="@+id/textViewResult"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:paddingTop="@dimen/dp16"
-        android:textSize="@dimen/sp16"
-        tools:text="Результат ночного действия" />
+        android:text="Действие" />
 
 </LinearLayout>

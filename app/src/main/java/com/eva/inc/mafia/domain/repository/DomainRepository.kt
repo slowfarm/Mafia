@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.core.content.edit
 import com.eva.inc.mafia.ui.entity.GameSnapshot
 import com.eva.inc.mafia.ui.entity.Player
+import com.eva.inc.mafia.ui.entity.Role
+import com.eva.inc.mafia.ui.entity.Step
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +26,8 @@ class DomainRepository(
 
     var allPlayers = emptyList<Player>()
         private set
+
+    var steps = mutableListOf<Step>()
 
     fun setPlayers(players: List<Player>) {
         val roles = Player.Companion.generate(players.size)
@@ -51,6 +55,28 @@ class DomainRepository(
         saveSnapshotToPrefs(snapshot)
     }
 
+    fun addStep(
+        role: Role,
+        player: Player?,
+    ) {
+        val roleStep = steps.firstOrNull { it.role == role }
+        val moves = roleStep?.numbers?.toMutableList() ?: mutableListOf()
+        moves.add(player)
+        if (roleStep == null) {
+            steps.add(Step(role, moves))
+        } else {
+            steps =
+                steps
+                    .map {
+                        if (it.role == role) {
+                            Step(role, moves)
+                        } else {
+                            it
+                        }
+                    }.toMutableList()
+        }
+    }
+
     fun saveSnapshotToPrefs(snapshot: GameSnapshot?) {
         val json = snapshot?.let { serializeSnapshots(it) }
         getSharedPreferences().edit { putString(KEY_SNAPSHOTS, json) }
@@ -72,6 +98,7 @@ class DomainRepository(
         _exhibitedPlayers.value = snapshot.exhibitedPlayers.toSet()
         pendingPlayers = snapshot.pendingPlayers.toMutableSet()
         allPlayers = snapshot.allPlayers
+        steps = snapshot.steps.toMutableList()
     }
 
     companion object {

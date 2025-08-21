@@ -172,6 +172,7 @@ class GameFlowManager(
             exhibitedPlayers = domainRepository.exhibitedPlayers.value.toList(),
             pendingPlayers = domainRepository.pendingPlayers.toList(),
             allPlayers = domainRepository.allPlayers,
+            steps = domainRepository.steps,
             phaseState = phaseState.name,
             wasNightPhase = wasNightPhase,
             currentDayTurnIndex = currentDayTurnIndex,

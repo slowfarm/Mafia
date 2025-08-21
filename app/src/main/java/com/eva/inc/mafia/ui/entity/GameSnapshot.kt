@@ -9,6 +9,7 @@ data class GameSnapshot(
     val exhibitedPlayers: List<Player>,
     val pendingPlayers: List<Player>,
     val allPlayers: List<Player>,
+    val steps: List<Step>,
     val phaseState: String,
     val wasNightPhase: Boolean,
     val currentDayTurnIndex: Int,

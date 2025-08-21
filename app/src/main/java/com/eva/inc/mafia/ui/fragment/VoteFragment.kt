@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.eva.inc.mafia.databinding.FragmentVoteBinding
 import com.eva.inc.mafia.ui.App
 import com.eva.inc.mafia.ui.adapter.ExhibitedPlayersAdapter
+import com.eva.inc.mafia.ui.entity.Role
 import com.eva.inc.mafia.ui.fragment.base.BaseFragment
 import com.eva.inc.mafia.ui.utils.collectWithLifecycle
 import com.eva.inc.mafia.ui.utils.lazyUi
@@ -28,7 +29,15 @@ class VoteFragment : BaseFragment<FragmentVoteBinding>() {
         binding.recyclerViewExhibitedPlayers.adapter = adapter
 
         binding.btnRemoveSelected.setOnClickListener {
+            val selectedPlayers = adapter.getSelectedPlayers()
             domainRepository.pendingPlayers.addAll(adapter.getSelectedPlayers())
+            if (selectedPlayers.isEmpty()) {
+                domainRepository.addStep(Role.CIVILIAN, null)
+            } else {
+                selectedPlayers.forEach { domainRepository.addStep(Role.CIVILIAN, it) }
+                binding.textView.text =
+                    "Убраны мирными жителями: " + selectedPlayers.joinToString(",") { it.toString() }
+            }
         }
 
         collectWithLifecycle(domainRepository.exhibitedPlayers) { players ->

@@ -4,11 +4,17 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import androidx.core.view.MenuProvider
+import com.eva.inc.mafia.R
 import com.eva.inc.mafia.databinding.ActivityMovesBinding
 import com.eva.inc.mafia.domain.GameFlowManager
 import com.eva.inc.mafia.ui.App
 import com.eva.inc.mafia.ui.activity.base.BaseActivity
 import com.eva.inc.mafia.ui.adapter.MovesPagerAdapter
+import com.eva.inc.mafia.ui.dialog.showStepsDialog
 import com.eva.inc.mafia.ui.entity.Move
 import com.eva.inc.mafia.ui.entity.Player
 import com.eva.inc.mafia.ui.utils.collectWithLifecycle
@@ -24,6 +30,8 @@ class MovesActivity : BaseActivity<ActivityMovesBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setSupportActionBar(binding.toolbar)
 
         binding.viewPager.adapter = adapter
 
@@ -49,6 +57,26 @@ class MovesActivity : BaseActivity<ActivityMovesBinding>() {
         collectWithLifecycle(domainRepository.exhibitedPlayers) { players ->
             updateToolbarTitle(players)
         }
+
+        addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(
+                    menu: Menu,
+                    menuInflater: MenuInflater,
+                ) {
+                    menuInflater.inflate(R.menu.menu_steps, menu)
+                }
+
+                override fun onMenuItemSelected(item: MenuItem): Boolean =
+                    when (item.itemId) {
+                        R.id.action_open -> {
+                            showStepsDialog(this@MovesActivity, domainRepository.steps)
+                            true
+                        }
+                        else -> false
+                    }
+            },
+        )
     }
 
     private fun updateToolbarTitle(players: Set<Player>) {
